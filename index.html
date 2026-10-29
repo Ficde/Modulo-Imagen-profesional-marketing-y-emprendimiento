@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espacio de Repaso - FICDE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ficde-azul-dark: #134252;
+            --ficde-azul-light: #2c5c6e;
+            --ficde-naranja: #e68161;
+            --ficde-naranja-hover: #ff9f85;
+            --tarjeta-bg: #f0f4f5;
+            --input-bg: #e2e8eb;
+            --texto-principal: #0f2d38;
+            --texto-secundario: #4a636e;
+            --verde-exito: #2e7d32;
+            --verde-bg: #c8e6c9;
+            --rojo-error: #c62828;
+            --naranja-bg: #ffe0b2;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--ficde-azul-dark) 0%, #0a252e 100%);
+            min-height: 100vh;
+            color: var(--texto-principal);
+            padding: 20px;
+            background-attachment: fixed;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 16px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logo-img { height: 50px; width: auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+
+        .module-tag {
+            background: var(--ficde-naranja);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .welcome-card {
+            background: var(--tarjeta-bg);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            border-bottom: 6px solid var(--ficde-naranja);
+            margin-bottom: 30px;
+        }
+
+        .welcome-title {
+            color: var(--ficde-azul-dark);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .fede-avatar-large {
+            width: 140px; height: 140px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: var(--ficde-naranja);
+            padding: 5px;
+            box-shadow: 0 10px 25px rgba(230, 129, 97, 0.5);
+            cursor: pointer;
+            transition: transform 0.3s;
+            overflow: hidden;
+        }
+
+        .fede-avatar-large:hover { transform: scale(1.1); }
+
+        .fede-avatar-large img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid white;
+        }
+
+        .blocks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .block-card {
+            background: var(--tarjeta-bg);
+            padding: 30px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .block-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--ficde-naranja);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .block-icon {
+            font-size: 3rem; margin-bottom: 15px;
+            background: rgba(19, 66, 82, 0.1);
+            width: 70px; height: 70px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; color: var(--ficde-azul-dark);
+        }
+
+        .block-title { color: var(--ficde-azul-dark); font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
+
+        .block-desc { color: var(--texto-secundario); font-size: 0.9rem; line-height: 1.5; }
+
+        .activity-screen {
+            display: none;
+            grid-template-columns: 280px 1fr;
+            gap: 25px;
+            align-items: start;
+        }
+
+        .activity-screen.active { display: grid; }
+
+        .tutor-sidebar {
+            background: var(--ficde-azul-light);
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            position: sticky; top: 20px;
+        }
+
+        .tutor-bubble {
+            background: rgba(255,255,255,0.95);
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            color: var(--ficde-azul-dark);
+            margin-top: 20px;
+            position: relative;
+            text-align: left;
+        }
+
+        .tutor-bubble::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            border-width: 0 10px 10px;
+            border-style: solid;
+            border-color: transparent transparent rgba(255,255,255,0.95);
+            transform: translateX(-50%);
+        }
+
+        .activity-content {
+            background: var(--tarjeta-bg);
+            padding: 40px;
+            border-radius: 16px;
+            min-height: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .act-badge {
+            background: var(--ficde-naranja);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .act-title { font-size: 1.8rem; color: var(--ficde-azul-dark); margin: 15px 0; font-weight: 800; }
+
+        .act-instruction { font-size: 1.1rem; color: var(--texto-secundario); margin-bottom: 30px; }
+
+        .student-input {
+            width: 100%;
+            height: 150px;
+            padding: 20px;
+            background: var(--input-bg);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            color: var(--ficde-azul-dark);
+            transition: all 0.3s;
+        }
+
+        .student-input:focus { background: white; border-color: var(--ficde-naranja); outline: none; }
+
+        .fill-input {
+            border: none;
+            border-bottom: 2px solid var(--ficde-naranja);
+            background: transparent;
+            font-weight: 700;
+            color: var(--ficde-azul-dark);
+            text-align: center;
+            width: 150px;
+            font-size: 1.1rem;
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 18px;
+            margin-top: 30px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            background: linear-gradient(90deg, var(--ficde-naranja), #ff9f85);
+            color: white;
+            box-shadow: 0 6px 20px rgba(230, 129, 97, 0.4);
+            transition: transform 0.2s;
+        }
+
+        .btn-action:hover { transform: translateY(-3px); }
+
+        .btn-back {
+            background: transparent;
+            color: var(--texto-secundario);
+            box-shadow: none;
+            border: 2px solid #ccc;
+            margin-top: 15px;
+        }
+
+        .btn-back:hover { background: #e0e0e0; color: var(--ficde-azul-dark); }
+
+        .traffic-row, .checklist-item {
+            background: white;
+            margin-bottom: 12px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .traffic-row:hover, .checklist-item:hover { border-color: var(--ficde-naranja); transform: translateX(5px); }
+
+        .traffic-btn {
+            width: 35px; height: 35px;
+            border-radius: 50%; border: 2px solid #ddd;
+            cursor: pointer;
+            opacity: 0.3;
+        }
+
+        .traffic-btn.active { opacity: 1; transform: scale(1.2); border-color: var(--ficde-azul-dark); }
+
+        .bg-green { background: #4CAF50; }
+
+        .bg-yellow { background: #FFC107; }
+
+        .bg-red { background: #f44336; }
+
+        .check-box {
+            width: 24px; height: 24px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        .checklist-item.selected { border-color: var(--ficde-naranja); background: #fff5f0; }
+
+        .checklist-item.selected .check-box { background: var(--ficde-naranja); border-color: var(--ficde-naranja); color: white; }
+
+        .feedback-area {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 12px;
+            display: none;
+            animation: slideUp 0.4s;
+        }
+
+        .feedback-success { background: var(--verde-bg); color: #1b5e20; border-left: 6px solid var(--verde-exito); }
+
+        .feedback-retry { background: var(--naranja-bg); color: #bf360c; border-left: 6px solid #ef6c00; }
+
+        .feedback-fail { background: #cfd8dc; color: #37474f; border-left: 6px solid #455a64; }
+
+        #musicToggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--ficde-naranja);
+            color: white;
+            border: none;
+            cursor: pointer;
+            z-index: 100;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .activity-screen { grid-template-columns: 1fr; }
+            .tutor-sidebar { display: flex; align-items: center; gap: 20px; }
+            .fede-avatar-large { width: 80px; height: 80px; }
+            .tutor-bubble::after { display: none; }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- AUDIOS MP3 - Todos en la misma carpeta -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="chill-study-desk-focus-concentration-lofi-451180.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="saludoInicial" preload="auto" src="saludoinicial.mp3"></audio>
+    <audio id="mensaje1Ejercicios" preload="auto" src="mensaje1ejercicios.mp3"></audio>
+    <audio id="mensaje2Ejercicios" preload="auto" src="mensaje2ejercicios.mp3"></audio>
+    <audio id="mensaje3Ejercicios" preload="auto" src="mensaje3ejercicios.mp3"></audio>
+    <audio id="mensaje4Ejercicios" preload="auto" src="mensaje4ejercicios.mp3"></audio>
+    <audio id="respuestaCorrecta" preload="auto" src="respuestacorrecta.mp3"></audio>
+    <audio id="primerError" preload="auto" src="primererror.mp3"></audio>
+    <audio id="segundoError" preload="auto" src="segundoerror.mp3"></audio>
+    <audio id="loLograste" preload="auto" src="lolograste.mp3"></audio>
+
+    <audio id="hoverSound" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.m4a"></audio>
+    <audio id="clickSound" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.m4a"></audio>
+    <audio id="successSound" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.m4a"></audio>
+
+    <button id="musicToggle" onclick="toggleMusic()">🔇</button>
+
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <img src="logo.png" alt="FICDE" class="logo-img" onerror="this.style.display='none'; document.getElementById('altLogo').style.display='block'">
+                <h2 id="altLogo" style="display:none; color:white; font-weight:800;">FICDE</h2>
+            </div>
+            <div class="module-tag">Modulo Imágen profesional marketing y emprendimiento.</header>
+        <div id="selectionScreen">
+            <div class="welcome-card">
+                <div class="fede-avatar-large" onclick="playAudio('saludoInicial')">
+                    <img src="personaje.gif" alt="Fede">
+                </div>
+                <h1 class="welcome-title">Espacio de Repaso Interactivo</h1>
+                <p style="color: var(--texto-secundario); font-size: 1.1rem;">Donde el conocimiento se convierte en acción</p>
+            </div>
+
+            <div class="blocks-grid">
+                <div class="block-card" onclick="startModule('sintesis')">
+                    <div class="block-icon">🧠</div>
+                    <div class="block-title">Síntesis</div>
+                    <div class="block-desc">Desarrollo de la imagen y gestión profesional, incluyendo ergonomía, comunicación y atención al consultante, registro y seguimiento de sesiones, organización del gabinete, costos y estrategias de marketing digital.</div>
+                </div>
+
+                <div class="block-card" onclick="startModule('analisis')">
+                    <div class="block-icon">🔍</div>
+                    <div class="block-title">Análisis Crítico</div>
+                    <div class="block-desc">Errores frecuentes en la práctica y gestión profesional relacionados con ergonomía, límites de actuación, registros y seguimiento, organización de turnos, fijación de precios, privacidad, comunicación digital y presentación del porfolio.</div>
+                </div>
+
+                <div class="block-card" onclick="startModule('escenarios')">
+                    <div class="block-icon">🎬</div>
+                    <div class="block-title">Escenarios</div>
+                    <div class="block-desc">Atención y comunicación profesional con el consultante, manejo de objeciones y seguimiento, promoción de servicios en redes sociales y WhatsApp Business, y criterios de derivación médica responsable.</div>
+                </div>
+
+                <div class="block-card" onclick="startModule('practica')">
+                    <div class="block-icon">⚡</div>
+                    <div class="block-title">Práctica</div>
+                    <div class="block-desc">Preparación y gestión integral de la atención profesional, incluyendo registro del consultante, desarrollo de la sesión, seguimiento y recomendaciones, fijación de precios e imagen y comunicación digital.</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="activityScreen" class="activity-screen">
+            <div class="tutor-sidebar">
+                <div class="fede-avatar-large" style="width: 100px; height: 100px; border-color: var(--ficde-naranja);" onclick="replayTutorMessage()">
+                    <img src="personaje.gif" alt="Fede">
+                </div>
+                <div style="flex:1;">
+                    <h3 style="color:var(--ficde-naranja); margin-bottom:5px;">Tutor Fede</h3>
+                    <div class="tutor-bubble" id="tutorMessage"></div>
+                </div>
+            </div>
+
+            <div class="activity-content" id="activityContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        // ===== GESTIÓN DE AUDIO MP3 =====
+        const audioFiles = {
+            saludoInicial: document.getElementById('saludoInicial'),
+            mensaje1: document.getElementById('mensaje1Ejercicios'),
+            mensaje2: document.getElementById('mensaje2Ejercicios'),
+            mensaje3: document.getElementById('mensaje3Ejercicios'),
+            mensaje4: document.getElementById('mensaje4Ejercicios'),
+            correcto: document.getElementById('respuestaCorrecta'),
+            error1: document.getElementById('primerError'),
+            error2: document.getElementById('segundoError'),
+            lolograste: document.getElementById('loLograste')
+        };
+
+        function playAudio(audioKey) {
+            if (audioFiles[audioKey]) {
+                audioFiles[audioKey].currentTime = 0;
+                audioFiles[audioKey].play().catch(err => console.log('Error al reproducir audio:', err));
+            }
+        }
+
+        const bgMusic = document.getElementById('bgMusic');
+        const clickSoundEl = document.getElementById('clickSound');
+        const successSoundEl = document.getElementById('successSound');
+        const hoverSoundEl = document.getElementById('hoverSound');
+
+        let musicOn = false;
+        let audioUnlocked = false;
+
+        function unlockAudio() {
+            if (audioUnlocked) return;
+            [clickSoundEl, successSoundEl, hoverSoundEl].forEach(a => {
+                a.volume = 0;
+                const p = a.play();
+                if (p) p.then(() => { a.pause(); a.currentTime = 0; a.volume = 1; }).catch(()=>{});
+            });
+            audioUnlocked = true;
+        }
+
+        document.addEventListener('pointerdown', unlockAudio, { once: true });
+        document.addEventListener('keydown', unlockAudio, { once: true });
+
+        function toggleMusic() {
+            unlockAudio();
+            if (!musicOn) {
+                bgMusic.volume = 0.1;
+                bgMusic.play().catch(() => {});
+                document.getElementById('musicToggle').innerText = '🎵';
+            } else {
+                bgMusic.pause();
+                document.getElementById('musicToggle').innerText = '🔇';
+            }
+            musicOn = !musicOn;
+        }
+
+        function playSound(type) {
+            if (!audioUnlocked) return;
+            try {
+                if (type === 'click') { clickSoundEl.currentTime=0; clickSoundEl.volume=0.8; clickSoundEl.play().catch(()=>{}); }
+                if (type === 'success') { successSoundEl.currentTime=0; successSoundEl.volume=0.8; successSoundEl.play().catch(()=>{}); }
+                if (type === 'hover') { hoverSoundEl.currentTime=0; hoverSoundEl.volume=0.2; hoverSoundEl.play().catch(()=>{}); }
+            } catch (e) {}
+        }
+
+        function wireUiSounds() {
+            document.querySelectorAll('.block-card, .btn-action, .checklist-item, .traffic-row, .fede-avatar-large').forEach(el => {
+                if (el.dataset.sound === '1') return;
+                el.dataset.sound = '1';
+                el.addEventListener('mouseenter', () => playSound('hover'));
+                el.addEventListener('click', () => playSound('click'));
+            });
+        }
+
+        window.addEventListener('load', wireUiSounds);
+
+        // ===== NORMALIZACIÓN DE TEXTO =====
+        function normalizar(txt) {
+            return txt
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase();
+        }
+
+        // ===== ACTIVIDADES: validaciones de texto simplificadas ===
+const modules = {
+
+    // ===================== SÍNTESIS =====================
+    sintesis: [
+        {
+            type: 'text',
+            badge: 'Salida laboral',
+            title: 'Concepto de imagen profesional',
+            instruction: 'Define el concepto de imagen profesional en reflexología indicando cómo transmite confianza y bienestar en gabinetes o spas.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                let c = 0;
+                if (v.includes('Proyectar') || v.includes('imagen')) c++;
+                if (v.includes('bienestar') || v.includes('contacto')) c++;
+                return c >= 2;
+            },
+            tutor: 'Considera que la presentación personal y la presencia adecuada consolidan la credibilidad del terapeuta.',
+            explanation: 'Proyectar una imagen cuidada inspira confianza y transmite bienestar desde el primer contacto.'
+        },
+        {
+            type: 'text',
+            badge: 'Salud ocupacional',
+            title: 'Postura ergonómica',
+            instruction: 'Clasifica la postura ergonómica que debe adoptar el reflexólogo para evitar el cansancio corporal durante la atención.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                let c = 0;
+                if (v.includes('Adoptar')) c++;
+                if (v.includes('postura') || v.includes('trabajo')) c++;
+                if (v.includes('gabinete')) c++;
+                return c >= 2;
+            },
+            tutor: 'Analiza la alineación del cuerpo del profesional para trabajar de forma cómoda sin obligar al cliente a encorvarse.',
+            explanation: 'Adoptar una postura de trabajo ergonómica previene el cansancio físico acumulado en el gabinete.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Confort en gabinete',
+            title: 'Elementos de apoyo',
+            instruction: 'Selecciona los tres elementos de apoyo recomendados para asegurar la comodidad de ambas partes durante la sesión.',
+            items: [
+                { text: 'Almohadillas ergonómicas para extremidades', correct: true },
+                { text: 'Cojines de soporte lumbar y cervical', correct: true },
+                { text: 'Muebles metálicos sin tapizado', correct: false },
+                { text: 'Camilla regulable acolchada', correct: true }
+            ],
+            tutor: 'Busca los accesorios que facilitan el posicionamiento cómodo de pies y manos sin tensiones musculares.',
+            explanation: 'Utilizar almohadillas, colocar cojines de soporte y disponer de camilla adecuada maximiza el confort.'
+        },
+        {
+            type: 'text',
+            badge: 'Relación con el consultante',
+            title: 'Comunicación terapéutica',
+            instruction: 'Detalla el rol de la escucha activa dentro de la comunicación terapéutica para comprender las necesidades del consultante.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                let c = 0;
+                if (v.includes('Ejercer') || v.includes('escucha')) c++;
+                if (v.includes('activa') || v.includes('identificar') || v.includes('paciente')) c++;
+                return c >= 2;
+            },
+            tutor: 'Reflexiona sobre el diálogo empático que permite recoger la información previa relevante antes del masaje.',
+            explanation: 'Ejercer la escucha permanente y activa permite identificar las necesidades reales del paciente.'
+        },
+        {
+    type: 'blanks',
+    badge: 'Encuadre legal',
+    title: 'Terapia complementaria',
+    instruction: 
+        'Completá las frases.<br><br>' +
+        '1. La reflexología actúa como una terapia ___ que promueve la salud natural sin reemplazar el ___ médico ni la prescripción de ___.<br>',
+    blanks: ['complementaria', 'diagnostico', 'farmacos'],
+    tutor: 'Recuerda la frontera entre el bienestar holístico y la atención médica oficial.',
+    explanation: 'Encuadrar la práctica como complementaria respeta el diagnóstico oficial sin suspender fármacos recetados.'
+},
+        {
+            type: 'text',
+            badge: 'Seguimiento de evolución',
+            title: 'Registro de sesiones',
+            instruction: 'Expone los parámetros físicos que deben anotarse en la ficha técnica de cada visita para fidelizar al consultante.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Registrar') || v.includes('sensibilidad')) &&
+                    (v.includes('evaluar') || v.includes('muscular'))
+                );
+            },
+            tutor: 'Contempla los cambios observados en la piel y musculatura de las manos o pies de una sesión a otra.',
+            explanation: 'Registrar variaciones en sensibilidad, medir la temperatura y evaluar el tono muscular evidencia avances.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Cuidados posteriores',
+            title: 'Consejos post-masaje',
+            instruction: 'Identifica los tres consejos de valor agregado que se deben brindar al finalizar la maniobra reflexológica.',
+            items: [
+                { text: 'Hidratación abundante con agua pura', correct: true },
+                { text: 'Ingesta inmediata de analgésicos sintéticos', correct: false },
+                { text: 'Consumo de alimentos livianos post-sesión', correct: true },
+                { text: 'Reposo relativo para eliminar toxinas', correct: true }
+            ],
+            tutor: 'Agrupa las pautas saludables que favorecen la depuración orgánica tras la estimulación refleja.',
+            explanation: 'Sugerir hidratación con agua, recomendar comida liviana y favorecer el reposo potencia los efectos.'
+        },
+        {
+            type: 'text',
+            badge: 'Gestión del tiempo',
+            title: 'Organización de agenda',
+            instruction: 'Describe la importancia de la administración eficiente de la agenda para garantizar una atención humanizada sin demoras.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                let c = 0;
+                if (v.includes('Organizar') || v.includes('intervalos') || v.includes('atenci')) c++;
+                if (v.includes('humanizada') || v.includes('puntual')) c++;
+                return c >= 2;
+            },
+            tutor: 'Observa cómo programar tiempos entre citas evita amontonamientos y preserva la calidad del servicio.',
+            explanation: 'Organizar la agenda incorporando intervalos adecuados garantiza una atención humanizada y puntual.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Finanzas del profesional',
+            title: 'Costos y presupuestos',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'El presupuesto profesional debe cubrir el costo de insumos como aceites, alquiler y ambientación.', color: 'green' },
+                { text: 'Fijar precios por debajo de los costos operativos es una estrategia sostenible a largo plazo.', color: 'red' },
+                { text: 'El cálculo de la tarifa por sesión debe permitir un desarrollo económico rentable para el terapeuta.', color: 'green' },
+                { text: 'Los costos fijos del gabinete no influyen en el valor final del servicio de reflexología.', color: 'red' }
+            ],
+            tutor: 'Contrasta los gastos de funcionamiento del gabinete con el margen de ganancia indispensable.',
+            explanation: 'Calcular los costos fijos e insumos fundamenta presupuestos justos que garantizan rentabilidad.'
+        },
+        {
+            type: 'text',
+            badge: 'Promoción holística',
+            title: 'Marketing digital integrativo',
+            instruction: 'Sintetiza el enfoque del marketing digital para posicionar el servicio dentro de la demanda de bienestar holístico.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Estructurar') || v.includes('marketing')) &&
+                    (v.includes('enfoque') || v.includes('bienestar') || v.includes('integral'))
+                );
+            },
+            tutor: 'Considera la difusión que comunica el equilibrio conjunto de los estados mental, físico y emocional.',
+            explanation: 'Estructurar el marketing desde un enfoque holístico resalta la búsqueda del bienestar integral.'
+        }
+    ],
+
+    // ===================== ANÁLISIS =====================
+    analisis: [
+        {
+            type: 'text',
+            badge: 'Riesgos posturales',
+            title: 'Desatención ergonómica',
+            instruction: 'Examina las consecuencias físicas para el reflexólogo de trabajar sin apoyo postural ni mobiliario adecuado.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Ignorar') || v.includes('ergonom')) &&
+                    (v.includes('fatiga') || v.includes('muscular') || v.includes('lesiones') || v.includes('sobrecarga'))
+                );
+            },
+            tutor: 'Considera cómo la sobreexposición a malas posturas genera dolores crónicos en espalda, brazos y manos.',
+            explanation: 'Ignorar la ergonomía causa fatiga muscular, desencadena lesiones articulares y produce sobrecarga física.'
+        },
+        {
+            type: 'text',
+            badge: 'Delimitación del rol',
+            title: 'Intrusismo diagnóstico',
+            instruction: 'Evalúa los peligros éticos y legales de emitir diagnósticos médicos o suspender fármacos desde la reflexología.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Cometer') || v.includes('diagnosticar') || v.includes('riesgo')) &&
+                    v.includes('consultante')
+                );
+            },
+            tutor: 'Reflexiona sobre la responsabilidad de confundir una zona refleja sensible con una patología clínica definida.',
+            explanation: 'Cometer intrusismo al diagnosticar expone a sanción legal y pone en riesgo al consultante.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Deficiencias de control ',
+            title: 'Omisión de registro técnico',
+            instruction: 'Escoge las tres complicaciones derivadas de no llevar un registro escrito de las sesiones del paciente.',
+            items: [
+                { text: 'Pérdida de seguimiento en cambios de sensibilidad', correct: true },
+                { text: 'Imposibilidad de evaluar la evolución del tono muscular', correct: true },
+                { text: 'Aumento involuntario de la duración del turno', correct: false },
+                { text: 'Dificultad para personalizar los consejos post-masaje', correct: true }
+            ],
+            tutor: 'Busca los factores que impiden demostrar avances concretos y restar profesionalismo a la atención.',
+            explanation: 'Omitir el registro dificulta medir la sensibilidad, evaluar el tono y personalizar recomendaciones.'
+        },
+        {
+            type: 'text',
+            badge: 'Errores en recomendaciones',
+            title: 'Depuración deficiente',
+            instruction: 'Explica por qué aconsejar infusiones azucaradas en lugar de agua pura entorpece la evacuación de toxinas post-sesión.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Prescindir') || v.includes('retrasa')) &&
+                    (v.includes('eliminaci') || v.includes('depuraci')) &&
+                    (v.includes('metab'))
+                );
+            },
+            tutor: 'Analiza la función del agua como vehículo biológico exclusivo para drenar los deshechos estimulados.',
+            explanation: 'No prescribir agua pura retrasa la eliminación de toxinas y perjudica la depuración metabólica.'
+        },
+        {
+    type: 'blanks',
+    badge: 'Fallas de administración',
+    title: 'Desorganización de turnos',
+    instruction: 
+        'Completar la frase.<br><br>' +
+        '1. La sobreprogramación de citas sin intervalos genera ___ en la sala de espera, deteriora la atención ___ y aumenta el estrés.<br>',
+    blanks: ['demoras', 'humanizada'],
+    tutor: 'Recuerda el impacto negativo de amontonar pacientes por falta de margen entre sesiones.',
+    explanation: 'Acumular demoras continuas destruye la experiencia humanizada y genera estrés en el entorno.'
+},
+        {
+            type: 'text',
+            badge: 'Errores de tarifación',
+            title: 'Subvaloración económica',
+            instruction: 'Juzga los riesgos financieros de establecer la tarifa del servicio por debajo del costo real de insumos y alquiler.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('subvaloraci') || v.includes('tarifaria')) &&
+                    (v.includes('conducen') || v.includes('quiebra') || v.includes('espacio'))
+                );
+            },
+            tutor: 'Contempla cómo el cobro insuficiente impide reponer materiales, mantener el espacio y sostener el emprendimiento.',
+            explanation: 'Incurrir en subvaloración tarifaria produce pérdidas constantes que conducen a la quiebra del espacio.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Faltas en difusión',
+            title: 'Violación de intimidad',
+            instruction: 'Señala las tres fallas éticas comunes al publicar imágenes de los consultantes en plataformas digitales.',
+            items: [
+                { text: 'Mostrar el rostro del paciente sin consentimiento firmado', correct: true },
+                { text: 'Solicitar reseñas escritas de satisfacción', correct: false },
+                { text: 'Exponer datos personales en capturas de pantalla', correct: true },
+                { text: 'Publicar fotos en zonas privadas sin reserva', correct: true }
+            ],
+            tutor: 'Identifica las acciones que vulneran la privacidad y el secreto profesional del paciente.',
+            explanation: 'Publicar la imagen sin permiso o exhibir datos privados vulnera la intimidad del consultante.'
+        },
+        {
+            type: 'text',
+            badge: 'Errores de comunicación',
+            title: 'Seguimiento inadecuado',
+            instruction: 'Argumenta por qué enviar mensajes de reclamo o dejar pasar más de 48 horas arruina la venta por WhatsApp.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('demora') || v.includes('enfriamiento') || v.includes('prospecto')) &&
+                    (v.includes('desconexi') || v.includes('comercial'))
+                );
+            },
+            tutor: 'Analiza la pérdida del interés del cliente cuando se tarda en responder o se adopta un tono exigente.',
+            explanation: 'La demora genera enfriamiento del prospecto y realizar un reclamo produce desconexión comercial.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Manejo de objeciones',
+            title: 'Respuestas defensivas',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'Responder de forma defensiva ante la objeción de precio aleja definitivamente al potencial consultante.', color: 'green' },
+                { text: 'Reencuadrar el precio como una inversión en salud ayuda a superar la barrera del costo.', color: 'green' },
+                { text: 'Discutir con el cliente sobre el valor de la sesión ayuda a convencerlo de su efectividad.', color: 'red' },
+                { text: 'Ignorar las dudas del cliente sobre la duración de la sesión acelera el cierre de la reserva.', color: 'red' }
+            ],
+            tutor: 'contrasta la confrontación verbal con la validación empática de las dudas financieras.',
+            explanation: 'Evitar la confrontación y fundamentar el valor de la atención transforma la objeción en reserva.'
+        },
+        {
+            type: 'text',
+            badge: 'Desorden de presentación',
+            title: 'Porfolio',
+            instruction: 'Sopesa las consecuencias comerciales de presentar un porfolio sin categorías claras ni fotos del gabinete impecable.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Exhibir') || v.includes('porfolio')) &&
+                    (v.includes('desconfianza') || v.includes('cliente') || v.includes('potencial'))
+                );
+            },
+            tutor: 'Considera cómo la falta de estética y la desorganización visual proyectan improvisación y poco profesionalismo.',
+            explanation: 'Exhibir un porfolio con desorden visual genera desconfianza inmediata en el cliente potencial.'
+        }
+    ],
+    // ===================== ESCENARIOS =====================
+    escenarios: [
+        {
+            type: 'text',
+            badge: 'Consulta inicial',
+            title: 'Paciente con sobrecarga tensional',
+            instruction: 'Plantea el protocolo de recepción e historia clínica para un consultante que llega con elevado estrés y dolores musculares.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    v.includes('Efectuar') ||
+                    (
+                        (v.includes('recepci') || v.includes('historia') || v.includes('reconforta')) &&
+                        (v.includes('paciente'))
+                    )    
+                );
+            },
+            tutor: 'Considera la escucha atenta, la preparación del ambiente con lavanda y la explicación de la sesión combinada.',
+            explanation: 'Efectuar una recepción empática, volcar la historia clínica y ofrecer alivio reconforta al paciente.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Contacto digital',
+            title: 'Mensaje inicial de WhatsApp',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'El mensaje inicial de WhatsApp debe usar bloques cortos de texto y emojis para facilitar la lectura rápida.', color: 'green' },
+                { text: 'Es recomendable enviar audios extensos de más de tres minutos explicando la teoría de las zonas reflejas.', color: 'red' },
+                { text: 'Omitir la pregunta final de cierre ayuda a que el cliente reflexione sin sentir presión alguna.', color: 'red' },
+                { text: 'Mencionar los beneficios inmediatos como el alivio de la rigidez aumenta el interés del consultante.', color: 'green' }
+            ],
+            tutor: 'Analiza las técnicas de mensajería clara y persuasiva centradas en la brevedad y el beneficio.',
+            explanation: 'Enviar textos cortos, destacar beneficios concretos y cerrar con pregunta agiliza la reserva.'
+        },
+        {
+            type: 'text',
+            badge: 'Negociación comercial',
+            title: 'Objeción de presupuesto',
+            instruction: 'Diseña una respuesta empática ante la afirmación "está muy caro" reencuadrando el gasto como inversión en salud.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Comprender') || v.includes('presupuesto')) &&
+                    (v.includes('inversi') || v.includes('facilidades') || v.includes('venta'))
+                );
+            },
+            tutor: 'Valida la preocupación monetaria, explica el ahorro en analgésicos y ofrece medios de pago alternativos.',
+            explanation: 'Comprender el presupuesto, demostrar la inversión preventiva y brindar facilidades destraba la venta.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Gestión de agendas',
+            title: 'Objeción de falta de tiempo',
+            instruction: 'Puntualiza las tres estrategias para convencer a un cliente con horarios complicados de agendar una sesión.',
+            items: [
+                { text: 'Exigir la cancelación de sus compromisos personales.', correct: false },
+                { text: 'Destacar que la sesión optimiza el descanso en pocos minutos', correct: true },
+                { text: 'Ofrecer horarios especiales temprano o al salir del trabajo', correct: true },
+                { text: 'Explicar que la pausa combate el agotamiento acumulado.', correct: true }
+            ],
+            tutor: 'Busca las respuestas que resaltan la eficiencia de la sesión y la flexibilidad de la agenda.',
+            explanation: 'Resaltar la eficiencia de tiempo, brindar flexibilidad horaria y mostrar el descanso facilita agendar.'
+        },
+        {
+            type: 'text',
+            badge: 'Cierre de reservas',
+            title: 'Seguimiento a las 24/48 horas',
+            instruction: 'Ilustra la redacción del mensaje de seguimiento servicial para un prospecto que dijo "te aviso luego".',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Realizar') || v.includes('seguimiento') || v.includes('argumentando')) &&
+                    (v.includes('turnos') || v.includes('acelera') || v.includes('decisi'))
+                );
+            },
+            tutor: 'Comunica la reorganización de la agenda semanal, menciona cupos limitados y ofrece dos opciones concretas de turno.',
+            explanation: 'Realizar el seguimiento argumentando escasez de turnos y brindando prioridad acelera la decisión.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Difusión en redes',
+            title: 'Formato TikTok e Instagram Reels',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'Los videos de 15 a 30 segundos sobre alivio de dolor de cabeza atraen alta audiencia orgánica.', color: 'green' },
+                { text: 'Mostrar la preparación del ambiente con aceites y velas resta profesionalismo a la marca.', color: 'red' },
+                { text: 'El formato "Antes y Después" evidencia la relajación del consultante al finalizar la sesión.', color: 'green' },
+                { text: 'Utilizar títulos largos e incompletos sin llamado a la acción mejora el alcance del video.', color: 'red' }
+            ],
+            tutor: 'Asocia la demostración visual rápida con el interés espontáneo del usuario en redes.',
+            explanation: 'Publicar videos cortos, mostrar la relajación real y agregar títulos atractivos genera viralidad.'
+        },
+        {
+            type: 'text',
+            badge: 'Marketing local',
+            title: 'Estrategias en Facebook',
+            instruction: 'Desglosa las acciones para captar consultantes de mayor edad en Facebook mediante testimonios y anuncios locales.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Interactuar') || v.includes('comunidad')) &&
+                    (v.includes('testimonios') || v.includes('reales') || v.includes('anuncios') || v.includes('locales'))
+                );
+            },
+            tutor: 'Contempla las publicaciones en grupos de barrio, el valor de las reseñas y los anuncios pagados a 5 km a la redonda.',
+            explanation: 'Interactuar en la comunidad, exponer testimonios reales y segmentar anuncios atrae clientes locales.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Conversión en Instagram',
+            title: 'Historias e interacción',
+            instruction: 'Reúne los tres elementos clave para transformar las interacciones de Instagram Stories en turnos confirmados.',
+            items: [
+                { text: 'Publicar encuestas diarias sobre molestias como insomnio', correct: true },
+                { text: 'Escribir por mensaje privado a quienes votan en las encuestas', correct: true },
+                { text: 'Mantener una carpeta destacada con precios y ubicación', correct: true },
+                { text: 'Desactivar la opción de respuesta directa por mensaje', correct: false }
+            ],
+            tutor: 'Agrupa las herramientas que estimulan la participación activa y derivan la conversación al chat privado.',
+            explanation: 'Lanzar encuestas interactivas, contactar por privado y ordenar destacados convierte seguidores.'
+        },
+        {
+            type: 'text',
+            badge: 'Catálogo digital',
+            title: 'WhatsApp Business',
+            instruction: 'Expón cómo organizar las fotos y precios en el catálogo de WhatsApp Business para responder consultas en un clic.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Estructurar') || v.includes('atractivas')) &&
+                    (v.includes('simplifica') || v.includes('venta'))
+                );
+            },
+            tutor: 'Considera la carga de la Promo de Bienvenida con imágenes de alta calidad del espacio y la técnica manual.',
+            explanation: 'Estructurar el catálogo con imágenes atractivas y precios claros simplifica la venta.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Ética profesional',
+            title: 'Derivación ante dolor persistente',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'El reflexólogo debe diagnosticar la enfermedad subyacente cuando encuentra sensibilidad en la mano.', color: 'red' },
+                { text: 'Si un punto reflejo presenta dolor agudo o persistente, se debe recomendar la consulta al médico.', color: 'green' },
+                { text: 'Prometer la cura definitiva de patologías crónicas mediante el masaje es una conducta ética.', color: 'red' },
+                { text: 'Explicar que la sesión busca la homeostasis ayuda a mantener la expectativa real del servicio.', color: 'green' }
+            ],
+            tutor: 'Evalúa la responsabilidad del terapeuta al detectar señales de alerta durante la evaluación visual y táctil.',
+            explanation: 'Recomendar la derivación médica, enfocar en la homeostasis y mantener la ética protege al consultante.'
+        }
+    ],
+
+    // ===================== PRÁCTICA =====================
+    practica: [
+        {
+            type: 'checklist',
+            badge: 'Acondicionamiento del gabinete',
+            title: 'Ambientación sensorial',
+            instruction: 'Elige los tres pasos prácticos para preparar un ambiente de trabajo independiente que estimule los sentidos.',
+            items: [
+                { text: 'Difundir aceite esencial de lavanda para relajar o eucalipto para activar', correct: true },
+                { text: 'Encender luces blancas de alta potencia sobre el rostro del paciente.', correct: false },
+                { text: 'Disponer toallas e insumos impecables sobre la camilla', correct: true },
+                { text: 'Reproducir música suave de fondo para potenciar el descanso.', correct: true }
+            ],
+            tutor: 'Enfócate en la combinación de aromaterapia, pulcritud textil y climatización sonora antes del ingreso.',
+            explanation: 'Utilizar aromaterapia, preparar la camilla e incorporar música ambiental crea un entorno sanador.'
+        },
+        {
+            type: 'text',
+            badge: 'Entrevista inicial',
+            title: 'Llenado de historia clínica',
+            instruction: 'Instruye la secuencia práctica para completar la historia clínica del paciente antes de iniciar la primera sesión.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('datos') || v.includes('identificar') || v.includes('profesional') || v.includes('atenci'))
+                );
+            },
+            tutor: 'Detalla el registro de antecedentes de salud, la identificación de dolores principales y la aclaración de terapia complementaria.',
+            explanation: 'Recabar datos médicos, identificar molestias y fijar el encuadre profesional formaliza la atención.'
+        },
+        {
+         type: 'blanks',
+         badge: 'Ficha de evolución',
+         title: 'Anotación técnica',
+         instruction: 
+        'Completá las frases.<br><br>' +
+        '1. Al finalizar el masaje se anota en la ficha la ___ detectada en zonas reflejas, el estado de la ___ y la respuesta al estímulo.<br>',
+         blanks: ['sensibilidad', 'piel'],
+         tutor: 'Recuerda los indicadores físicos palpables que deben archivarse para comparar en la siguiente cita.',
+         explanation: 'Registrar la sensibilidad hallada y el aspecto de la piel permite auditar la evolución real.'
+},
+        {
+            type: 'traffic',
+            badge: 'Propuesta comercial',
+            title: 'Presentación de la Promo Bienvenida',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'Omitir la duración exacta de la sesión evita que el cliente compare el servicio con otras opciones.', color: 'red' },
+                { text: 'Exigir el pago total en efectivo sin aceptar transferencias aumenta el flujo de clientes nuevos.', color: 'red' },
+                { text: 'Presentar la Promo de Bienvenida con un porcentaje de descuento exclusivo facilita la primera prueba.', color: 'green' },
+                { text: 'Detallar que el paquete incluye diagnóstico e integración podal y manual aporta percibir mayor valor.', color: 'green' }
+            ],
+            tutor: 'Analiza los elementos de la oferta inicial que reducen la resistencia del cliente a probar la terapia.',
+            explanation: 'Estructurar la promo con descuento, especificar la duración y comunicar el valor atrae pacientes.'
+        },
+        {
+            type: 'text',
+            badge: 'Ejecución técnica',
+            title: 'Maniobras para la homeostasis',
+            instruction: 'Prescribe la aplicación ordenada de caminata de gusano, rotación y gancho en la palma para estimular la homeostasis.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Ejecutar') || v.includes('caminata')) &&
+                    (v.includes('oruga') || v.includes('puntos') || v.includes('estimula') || v.includes('homeostasis'))
+                );
+            },
+            tutor: 'Pauta el avance rítmico del pulgar, la presión circular fija y la tracción suave sobre los puntos reflejos.',
+            explanation: 'Ejecutar la caminata de oruga, aplicar rotación en puntos y usar gancho estimula la homeostasis.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Fidelización activa',
+            title: 'Mensaje de seguimiento',
+            instruction: 'Determina las tres pautas para redactar el mensaje de WhatsApp a los 7-10 días de la sesión previa.',
+            items: [
+                { text: 'Exigir una respuesta antes de que finalice la jornada', correct: false },
+                { text: 'Consultar cómo continuó la molestia o cansancio tratado', correct: true },
+                { text: 'Resaltar la importancia de hacer seguimiento para no acumular tensión', correct: true },
+                { text: 'Ofrecer dos opciones de días disponibles para reservar', correct: true }
+            ],
+            tutor: 'Agrupa las frases que demuestran interés sincero por la evolución del paciente y facilitan la agenda.',
+            explanation: 'Indagar la evolución, fundamentar el seguimiento y proponer días específicos concreta la segunda cita.'
+        },
+        {
+            type: 'text',
+            badge: 'Producción visual',
+            title: 'Registro fotográfico del gabinete',
+            instruction: 'guía la toma de fotografías de alta definición del gabinete y de las manos en acción preservando la intimidad.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('encuadre') || v.includes('iluminaci') || v.includes('nitidez')) &&
+                    (v.includes('profesional') || v.includes('porfolio'))
+                );
+            },
+            tutor: 'Ordena la iluminación tenue pero clara, el plano corto sobre el punto reflejo y la ausencia de rostros sin autorización.',
+            explanation: 'Cuidar el encuadre, asegurar la iluminación y buscar nitidez profesional destaca el porfolio.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Presencia en redes',
+            title: 'Biografía del perfil profesional',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'La biografía debe indicar la especialidad, la ciudad o barrio y el enlace directo a WhatsApp.', color: 'green' },
+                { text: 'Utilizar un nombre de usuario complejo con símbolos dificulta que los clientes encuentren el perfil.', color: 'red' },
+                { text: 'Es preferible no colocar la ubicación geográfica para atraer consultas de todo el mundo sin filtro.', color: 'red' },
+                { text: 'Incluir una promesa clara de alivio de estrés o dolor capta la atención en tres segundos.', color: 'green' }
+            ],
+            tutor: 'Examina los componentes de la carta de presentación digital que convierten visitantes en contactos.',
+            explanation: 'Precisar la especialidad, incluir la ubicación y colocar el enlace directo genera conversión.'
+        },
+        {
+            type: 'text',
+            badge: 'Estructuración digital',
+            title: 'Configuración de posts fijados',
+            instruction: 'Pauta el contenido de los tres posts que deben permanecer fijados en la parte superior del perfil de Instagram.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('presentaci') || v.includes('personal') || v.includes('infograf') || v.includes('explicativa'))&&
+                    (v.includes('promoci') || v.includes('perfil'))
+                );
+            },
+            tutor: 'Organiza la historia personal del terapeuta, la imagen explicativa de la técnica y la oferta del paquete inicial.',
+            explanation: 'Fijar la presentación personal, incluir la infografía explicativa y destacar la promoción ordena el perfil.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Cierre del servicio',
+            title: 'Pautas post-sesión y derivación',
+            instruction: 'Compila las tareas finales que el reflexólogo debe ejecutar antes de despedir al consultante en el gabinete.',
+            items: [
+                { text: 'Recetar antiinflamatorios comerciales para el hogar', correct: false },
+                { text: 'Entregar la recomendación de beber agua pura y comer liviano', correct: true },
+                { text: 'Programar la fecha tentativa para la sesión de seguimiento', correct: true },
+                { text: 'Indicar la consulta médica si se detectaron puntos reflejos muy dolorosos', correct: true }
+            ],
+            tutor: 'Busca las acciones que refuerzan los cuidados saludables, aseguran el retorno y derivan responsablemente.',
+            explanation: 'Entregar consejos de agua, acordar el seguimiento e indicar derivación médica cierra la atención.'
+        }
+    ]
+};
+
+        let currentModule = '';
+        let currentIndex = 0;
+        let attemptCount = 0;
+        let lastAudioModule = null;
+
+        // ===== MAPEO DE MÓDULOS A AUDIOS =====
+        const moduloAudioMap = {
+            'sintesis': 'mensaje1',
+            'analisis': 'mensaje2',
+            'escenarios': 'mensaje3',
+            'practica': 'mensaje4'
+        };
+
+        function startModule(id) {
+            playSound('click');
+            currentModule = id;
+            currentIndex = 0;
+            attemptCount = 0;
+            lastAudioModule = id;
+
+            // Reproducir el audio del módulo correspondiente
+            const audioKey = moduloAudioMap[id];
+            if (audioKey) {
+                playAudio(audioKey);
+            }
+
+            document.getElementById('selectionScreen').style.display = 'none';
+            document.getElementById('activityScreen').classList.add('active');
+
+            setTimeout(loadActivity, 300);
+        }
+
+        function loadActivity() {
+            attemptCount = 0;
+
+            if (currentIndex >= modules[currentModule].length) {
+                // Reproducir "lolograste.mp3" al terminar TODAS las preguntas
+                playAudio('lolograste');
+                playSound('success');
+                alert('¡Excelente! Completaste este bloque.');
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+                return;
+            }
+
+            const data = modules[currentModule][currentIndex];
+            const container = document.getElementById('activityContainer');
+
+            const msg = `Pregunta ${currentIndex + 1} de ${modules[currentModule].length}: ${data.tutor}`;
+            document.getElementById('tutorMessage').innerText = msg;
+
+            let html = `<span class="act-badge">${data.badge}</span>
+                        <h2 class="act-title">${data.title}</h2>
+                        <p class="act-instruction">${data.instruction}</p>`;
+
+            if (data.type === 'text') {
+                html += `<textarea id="txtInput" class="student-input" placeholder="Escribe tu respuesta con tus palabras..."></textarea>`;
+            } else if (data.type === 'blanks') {
+                html += `<div style="font-size:1.2rem; line-height:2.5;">`;
+                data.blanks.forEach((b, i) => {
+                    html += `${i + 1}. <input type="text" class="fill-input" data-ans="${b}"> <br>`;
+                });
+                html += `</div>`;
+            } else if (data.type === 'traffic') {
+                data.items.forEach((item, i) => {
+                    html += `<div class="traffic-row" id="row-${i}">
+                                <span>${item.text}</span>
+                                <div style="display:flex; gap:10px;">
+                                    <div class="traffic-btn bg-green" onclick="selTraffic(${i}, 'green')"></div>
+                                    <div class="traffic-btn bg-yellow" onclick="selTraffic(${i}, 'yellow')"></div>
+                                    <div class="traffic-btn bg-red" onclick="selTraffic(${i}, 'red')"></div>
+                                </div>
+                            </div>`;
+                });
+            } else if (data.type === 'checklist') {
+                data.items.forEach((item) => {
+                    html += `<div class="checklist-item" onclick="toggleCheck(this)" data-correct="${item.correct}">
+                                <div class="check-box"></div>
+                                <span>${item.text}</span>
+                            </div>`;
+                });
+            }
+
+            html += `<div id="feedback" class="feedback-area"></div>
+                     <button id="btnCheck" class="btn-action" onclick="validate()">Verificar respuesta</button>
+                     <button class="btn-action btn-back" onclick="location.reload()">Salir al menú</button>`;
+
+            container.innerHTML = html;
+            wireUiSounds();
+        }
+
+        let trafficAns = {};
+
+        function selTraffic(idx, color) {
+            trafficAns[idx] = color;
+            const row = document.getElementById(`row-${idx}`);
+            row.querySelectorAll('.traffic-btn').forEach(b => b.classList.remove('active'));
+            row.querySelector(`.bg-${color}`).classList.add('active');
+            playSound('click');
+        }
+
+        function toggleCheck(el) {
+            el.classList.toggle('selected');
+            el.querySelector('.check-box').innerText = el.classList.contains('selected') ? '✓' : '';
+
+            if (el.classList.contains('selected')) {
+                el.style.borderColor = 'var(--ficde-naranja)';
+                el.querySelector('.check-box').style.background = 'var(--ficde-naranja)';
+                el.querySelector('.check-box').style.borderColor = 'var(--ficde-naranja)';
+                el.querySelector('.check-box').style.color = 'white';
+            } else {
+                el.style.borderColor = 'transparent';
+                el.querySelector('.check-box').style.background = 'transparent';
+                el.querySelector('.check-box').style.borderColor = '#ccc';
+            }
+
+            playSound('click');
+        }
+
+        function validate() {
+            const data = modules[currentModule][currentIndex];
+            const feedback = document.getElementById('feedback');
+            let isCorrect = false;
+
+            if (data.type === 'text') {
+                const val = document.getElementById('txtInput').value;
+                isCorrect = data.validation(val);
+            } else if (data.type === 'blanks') {
+                const inputs = document.querySelectorAll('.fill-input');
+                let hits = 0;
+                inputs.forEach(inp => {
+                    const v = normalizar(inp.value);
+                    const ans = normalizar(inp.dataset.ans);
+                    if (v.length > 1 && ans.startsWith(v.slice(0, Math.max(2, Math.min(v.length, ans.length))))) hits++;
+                });
+                isCorrect = (hits === data.blanks.length);
+            } else if (data.type === 'traffic') {
+                let hits = 0;
+                data.items.forEach((item, i) => { if (trafficAns[i] === item.color) hits++; });
+                isCorrect = (hits === data.items.length);
+            } else if (data.type === 'checklist') {
+                let correct = true;
+                document.querySelectorAll('.checklist-item').forEach(item => {
+                    const sel = item.classList.contains('selected');
+                    const should = item.dataset.correct === 'true';
+                    if (sel !== should) correct = false;
+                });
+                isCorrect = correct;
+            }
+
+            feedback.style.display = 'block';
+
+            if (isCorrect) {
+                playAudio('correcto');
+                playSound('success');
+                feedback.className = 'feedback-area feedback-success';
+                feedback.innerHTML = `<strong>¡Muy bien!</strong><br>${data.explanation}`;
+                document.getElementById('btnCheck').innerText = 'Siguiente pregunta →';
+                document.getElementById('btnCheck').onclick = () => { currentIndex++; loadActivity(); };
+            } else {
+                attemptCount++;
+
+                if (attemptCount < 2) {
+                    playAudio('error1');
+                    feedback.className = 'feedback-area feedback-retry';
+                    feedback.innerHTML = `<strong>Buen intento.</strong> Revisá tu respuesta. Pista: ${data.tutor}`;
+                } else {
+                    playAudio('error2');
+                    feedback.className = 'feedback-area feedback-fail';
+                    feedback.innerHTML = `<strong>No pasa nada, aprendamos juntos:</strong><br>${data.explanation}`;
+                    document.getElementById('btnCheck').innerText = 'Entendido, continuar →';
+                    document.getElementById('btnCheck').onclick = () => { currentIndex++; loadActivity(); };
+                }
+            }
+        }
+
+        function replayTutorMessage() {
+            // Replay del último audio de módulo reproducido
+            if (lastAudioModule) {
+                const audioKey = moduloAudioMap[lastAudioModule];
+                if (audioKey) {
+                    playAudio(audioKey);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
